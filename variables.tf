@@ -81,6 +81,12 @@ variable "buildkite_agent_tags" {
   default     = ""
 }
 
+variable "enable_launch_template_agent_metadata" {
+  description = "Expose the launch template name, ID, and latest version as Buildkite agent metadata through propagated EC2 instance tags."
+  type        = bool
+  default     = false
+}
+
 variable "buildkite_agent_timestamp_lines" {
   description = "Set to true to prepend timestamps to every line of output."
   type        = bool

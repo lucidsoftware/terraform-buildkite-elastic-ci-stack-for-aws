@@ -254,6 +254,21 @@ resource "aws_autoscaling_group" "agent_auto_scale_group" {
     }
   }
 
+  # Agents import EC2 instance tags as Buildkite metadata. Propagating these
+  # values makes the launch template used by each agent visible in Buildkite.
+  dynamic "tag" {
+    for_each = var.enable_launch_template_agent_metadata ? {
+      "launch-template-id"      = aws_launch_template.agent_launch_template.id
+      "launch-template-name"    = aws_launch_template.agent_launch_template.name
+      "launch-template-version" = tostring(aws_launch_template.agent_launch_template.latest_version)
+    } : {}
+    content {
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = true
+    }
+  }
+
   lifecycle {
     ignore_changes = [suspended_processes]
   }
